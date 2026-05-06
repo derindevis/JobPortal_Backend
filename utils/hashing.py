@@ -1,10 +1,14 @@
-from sqlalchemy import Column, Integer, String
-from database import Base
+# utils/hashing.py
+from passlib.context import CryptContext
 
-class User(Base):
-    __tablename__ = "users"
+# bcrypt is the hashing algorithm — industry standard for passwords
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    role = Column(String(10), default="user")  # values: 'user' or 'admin'
+def hash_password(password: str) -> str:
+    """Converts plain text password to bcrypt hash."""
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Returns True if plain_password matches the stored hash."""
+    return pwd_context.verify(plain_password, hashed_password)
+
