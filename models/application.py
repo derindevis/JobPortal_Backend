@@ -4,7 +4,7 @@ from database import Base
 
 class Application(Base):
     __tablename__="applications"
-    #[cite:16] use ariyilla nokkanam
+    
     id=Column(Integer, primary_key=True, index=True, autoincrement=True) 
     job_id=Column(Integer, ForeignKey("jobs.id"), nullable=False) 
     user_id=Column(Integer, ForeignKey("users.id"), nullable=False) 

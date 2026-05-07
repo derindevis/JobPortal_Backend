@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class JobCreate(BaseModel):
-    title:str
-    company:str
-    location:str
+    title:str = Field(..., min_length=3, max_length=150)
+    company:str = Field(..., min_length=2, max_length=100)
+    location:str = Field(..., min_length=2, max_length=100)
     salary:Optional[str]=None
-    description:str
-    deadline:str
+    description:str = Field(...,min_length=10)
+    deadline:str = Field(..., max_length=20)
 
 class JobUpdate(BaseModel):
     title:Optional[str]=None
