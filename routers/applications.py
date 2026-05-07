@@ -33,8 +33,8 @@ def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_
 def update_app_status(app_id:int, status_code: ApplicationStatusUpdate, db: Session=Depends(get_db),admin=Depends(require_admin)):
     application=db.query(Application).filter(Application.id==app_id).first()
     if not application:
-        raise G=HTTPException(status_code=404, detail="Application Not Found!")
-    application.status=status_data.status
+        raise HTTPException(status_code=404, detail="Application Not Found!")
+    application.status=status_code.status
     db.commit()
     db.refresh(application)
     return application
