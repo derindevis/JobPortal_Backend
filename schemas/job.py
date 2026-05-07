@@ -19,6 +19,7 @@ class JobUpdate(BaseModel):
 
 class JobOut(BaseModel):
     id:int
+    title:str
     company:str
     location:str
     salary:Optional[str]
