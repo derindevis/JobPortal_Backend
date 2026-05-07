@@ -5,32 +5,36 @@ from models.user import User
 from schemas.user import UserCreate, UserLogin, UserOut
 from utils.hashing import hash_password, verify_password
 from utils.jwt import create_access_token
+from dependencies import get_current_user
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter()
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if user already exists
     existing = db.query(User).filter(User.username == user.username).first()
     if existing:
         raise HTTPException(status_code=400, detail="Username already taken")
-    
-    # Create new user with hashed password
+
     new_user = User(
         username=user.username,
         hashed_password=hash_password(user.password),
-        role=user.role
+        role=user.role 
     )
-    db.add(new_user)
-    db.commit()
+    db.add(new_user) 
+    db.commit() 
     db.refresh(new_user)
     return new_user
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.username == user.username).first()
+
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
+   
     token = create_access_token(data={"sub": db_user.username, "role": db_user.role})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/me", response_model=UserOut)
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user

@@ -7,9 +7,10 @@ import models.job
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="JobPortal")
 #auth.py nirmicha routes upayogikkan fastapi node parayum
-app.include_router(auth.router, prefix="/auth") 
+app.include_router(auth.router, prefix="/auth",tags=["Authentication"]) 
 app.include_router(jobs.router,prefix="/jobs",tags=["Jobs"])
-
 @app.get("/")
-def root():
-    return{"message":"JonPortal API is running"}
+def read_root():
+    return {"message": "The Job portal is running!"}
+
+
