@@ -23,7 +23,7 @@ class UserCreate(BaseModel):
     @field_validator("role")
     def role_must(cls, value):
         if value.lower() in ["user", "admin"]:
-            return value
+            return value.lower()
         raise ValueError("Role must be 'user' or 'admin'")
 
 class UserOut(BaseModel):
