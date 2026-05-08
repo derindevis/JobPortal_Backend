@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class UserCreate(BaseModel):
     username: str
-    password: str
+    password: str = Field(min_length=8)
     role: Optional[str] = "user"
 
     @field_validator("username")
@@ -13,6 +13,18 @@ class UserCreate(BaseModel):
         if ' ' in value:
             raise ValueError("Spaces are not allowed")
         return value
+
+    @field_validator("password")
+    def Pwd_must(cls, value):
+        if len(value)<8:
+            raise ValueError("Password must be at least 8 characters")
+        return value
+
+    @field_validator("role")
+    def role_must(cls, value):
+        if value.lower() in ["user", "admin"]:
+            return value
+        raise ValueError("Role must be 'user' or 'admin'")
 
 class UserOut(BaseModel):
     id: int
@@ -25,3 +37,4 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "Bearer"
+    role: str

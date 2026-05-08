@@ -24,7 +24,7 @@ app.add_middleware(
 #auth.py nirmicha routes upayogikkan fastapi node parayum
 app.include_router(auth.router, prefix="/auth",tags=["Authentication"]) 
 app.include_router(jobs.router,prefix="/jobs",tags=["Jobs"])
-app.include_router(applications.router,prefix="/app",tags=["Applications"])
+app.include_router(applications.router,prefix="/applications",tags=["Applications"])
 
 @app.get("/")
 def read_root():

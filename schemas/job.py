@@ -16,6 +16,7 @@ class JobUpdate(BaseModel):
     salary:Optional[str]=None
     description:Optional[str]=None
     deadline:Optional[str]=None
+    active: Optional[bool]=None
 
 class JobOut(BaseModel):
     id:int

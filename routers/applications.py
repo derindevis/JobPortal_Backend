@@ -5,6 +5,7 @@ from database import get_db
 from models.application import Application
 from schemas.application import ApplicationCreate, ApplicationResponse, ApplicationStatusUpdate
 from dependencies import get_current_user, require_admin
+from models.job import Job
 
 router=APIRouter()
 
@@ -18,8 +19,13 @@ def get_all_applications(db: Session=Depends(get_db), admin=Depends(require_admi
 
 @router.post("/", response_model=ApplicationResponse, status_code=201)
 def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_user=Depends(get_current_user)):
+    job=db.query(Job).filter(Job.id==data.job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="The job doesn't exist.")
+    if not job.active:
+        raise HTTPException(status_code=400, detail="This job is no longer accepting applications.")
+    
     existing=db.query(Application).filter(Application.job_id==data.job_id, Application.user_id==current_user.id).first()
-
     if existing:
         raise HTTPException(status_code=400, detail="You have already applied!")
 
