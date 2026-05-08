@@ -1,5 +1,15 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
+from datetime import date
+
+def validate_date(value: Optional[str]):
+    if value is None:
+        return value
+    try:
+        parsed_date=datetime.strptime(value, '%Y-%m-%d').date()
+        return value
+    except ValueError:
+        raise ValueError("Deadline must be in 'YYYY-MM-DD' format")
 
 class JobCreate(BaseModel):
     title:str = Field(..., min_length=3, max_length=150)
@@ -9,6 +19,10 @@ class JobCreate(BaseModel):
     description:str = Field(...,min_length=10)
     deadline:str = Field(..., max_length=20)
 
+    @field_validator("deadline")
+    def check_deadline(cls, v):
+        return validate_date(v)
+
 class JobUpdate(BaseModel):
     title:Optional[str]=None
     company:Optional[str]=None
@@ -17,6 +31,10 @@ class JobUpdate(BaseModel):
     description:Optional[str]=None
     deadline:Optional[str]=None
     active: Optional[bool]=None
+
+    @field_validator("deadline")
+    def check_deadline(cls, v):
+        return validate_date(v)
 
 class JobOut(BaseModel):
     id:int
