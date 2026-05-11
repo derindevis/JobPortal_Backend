@@ -44,4 +44,3 @@ def update_app_status(app_id:int, status_code: ApplicationStatusUpdate, db: Sess
     db.commit()
     db.refresh(application)
     return application
-    

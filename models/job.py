@@ -12,4 +12,3 @@ class Job(Base):
     description=Column(Text,nullable=False)
     deadline=Column(String(50),nullable=False)
     active=Column(Boolean,default=True)
-    

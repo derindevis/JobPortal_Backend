@@ -29,3 +29,4 @@ app.include_router(applications.router,prefix="/applications",tags=["Application
 @app.get("/")
 def read_root():
     return {"message": "The Job portal is running!"}
+    
