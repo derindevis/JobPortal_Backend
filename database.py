@@ -1,6 +1,6 @@
-# database.py
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./jobportal.db"
 
@@ -13,7 +13,8 @@ SessionLocal = sessionmaker(
     autoflush=False, 
     bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+   pass
 
 def get_db():
     db = SessionLocal()

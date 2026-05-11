@@ -34,7 +34,7 @@ def update_app_status(app_id:int, status_code: ApplicationStatusUpdate, db: Sess
     application=db.query(Application).filter(Application.id==app_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application Not Found!")
-    application.status=status_code.status
+    application.status=status_data.status
     db.commit()
     db.refresh(application)
     return application

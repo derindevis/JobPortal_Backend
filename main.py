@@ -1,6 +1,9 @@
+import os
 from fastapi import FastAPI
 from database import engine, Base
 from routers import jobs,auth,applications
+from dotenv import load_dotenv
+load_dotenv()
 #eathanu sherikkum olla SQL Tables ninghalude model vechu indakkunnathu
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="JobPortal")

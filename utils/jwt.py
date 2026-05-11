@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import os
 
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-dev-key-change-in-prod")
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv('ALGORITHM','HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES','30'))
 
 def create_access_token(data: dict) -> str:
