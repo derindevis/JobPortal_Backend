@@ -62,4 +62,3 @@ def delete_job(job_id:int,db:Session=Depends(get_db),admin=Depends(require_admin
     db.delete(job)
     db.commit()
     return {"message":f"Job '{job.title}' deleted successfully"}
-  

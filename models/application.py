@@ -12,4 +12,5 @@ class Application(Base):
     #func.now() uses the database's internal clock.
     #sever um user um diff place il annel, datetime.now() time confusin undakkum.
     applied_at=Column(DateTime(timezone=True),server_default=func.now()) 
-    status=Column(String(20), default='Applied') 
+    status=Column(String(20), default='Applied')
+    
