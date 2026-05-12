@@ -18,9 +18,11 @@ def expiry(db: Session):
         db.commit()
 
 @router.get('/',response_model=List[JobOut])
-def list_jobs(db: Session=Depends(get_db), user=Depends(get_current_user), title: Optional[str]=None, location: Optional[str]=None, limit: int=10, page: int=1):
+def list_jobs(db: Session=Depends(get_db), current_user=Depends(get_current_user), title: Optional[str]=None, location: Optional[str]=None, limit: int=10, page: int=1):
     expiry(db)
-    query = db.query(Job).filter(Job.active==True)
+    query = db.query(Job)
+    if current_user.role!="admin":
+        query=query.filter(Job.active==True)
     if title:
         query=query.filter(Job.title.ilike(f"%{title}%"))
     if location:
