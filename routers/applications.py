@@ -6,6 +6,7 @@ from models.application import Application
 from schemas.application import ApplicationCreate, ApplicationResponse, ApplicationStatusUpdate
 from dependencies import get_current_user, require_admin, require_user
 from models.job import Job
+from models.user import User
 
 router=APIRouter()
 
@@ -36,7 +37,7 @@ def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_
 
 
 @router.put("/{app_id}", response_model=ApplicationResponse)
-def update_app_status(app_id:int, status_code: ApplicationStatusUpdate, db: Session=Depends(get_db),admin=Depends(require_admin)):
+def update_app_status(app_id:int, payload: ApplicationStatusUpdate, db: Session=Depends(get_db),admin=Depends(require_admin)):
     application=db.query(Application).filter(Application.id==app_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application Not Found!")
