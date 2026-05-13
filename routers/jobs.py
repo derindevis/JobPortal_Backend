@@ -2,6 +2,7 @@ from fastapi import APIRouter,HTTPException,Depends,status
 from sqlalchemy.orm import Session
 from database import get_db
 from models.job import Job
+from models.application import Application
 from schemas.job import JobCreate,JobUpdate,JobOut
 from dependencies import get_current_user,require_admin
 from typing import List, Optional
@@ -18,9 +19,11 @@ def expiry(db: Session):
         db.commit()
 
 @router.get('/',response_model=List[JobOut])
-def list_jobs(db: Session=Depends(get_db), user=Depends(get_current_user), title: Optional[str]=None, location: Optional[str]=None, limit: int=10, page: int=1):
+def list_jobs(db: Session=Depends(get_db), current_user=Depends(get_current_user), title: Optional[str]=None, location: Optional[str]=None, limit: int=10, page: int=1):
     expiry(db)
-    query = db.query(Job).filter(Job.active==True)
+    query = db.query(Job)
+    if current_user.role!="admin":
+        query=query.filter(Job.active==True)
     if title:
         query=query.filter(Job.title.ilike(f"%{title}%"))
     if location:
@@ -59,6 +62,7 @@ def delete_job(job_id:int,db:Session=Depends(get_db),admin=Depends(require_admin
     job=db.query(Job).filter(Job.id==job_id).first()
     if not job:
         raise HTTPException(status_code=404,detail="job not found")
+    db.query(Application).filter(Application.job_id==job_id).delete()
     db.delete(job)
     db.commit()
     return {"message":f"Job '{job.title}' deleted successfully"}
