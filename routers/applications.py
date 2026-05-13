@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends,status
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
@@ -62,4 +62,3 @@ def withdraw_application(
     db.delete(application)
     db.commit()
     return {"Message":"Application Withdrawn Successfully!"}
-    
