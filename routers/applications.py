@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends,status
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
@@ -36,7 +36,7 @@ def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_
     return new_app
 
 @router.put("/{app_id}", response_model=ApplicationResponse)
-def update_app_status(app_id:int, status_code: ApplicationStatusUpdate, db: Session=Depends(get_db),admin=Depends(require_admin)):
+def update_app_status(app_id:int, status_data: ApplicationStatusUpdate, db: Session=Depends(get_db),admin=Depends(require_admin)):
     application=db.query(Application).filter(Application.id==app_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application Not Found!")
