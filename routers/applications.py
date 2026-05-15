@@ -6,6 +6,7 @@ from models.application import Application
 from schemas.application import ApplicationCreate, ApplicationResponse, ApplicationStatusUpdate
 from dependencies import get_current_user, require_admin, require_user
 from models.job import Job
+from models.user import User
 
 router=APIRouter()
 
@@ -17,7 +18,7 @@ def get_dashboard(db: Session=Depends(get_db), current_user=Depends(get_current_
     
 
 @router.post("/", response_model=ApplicationResponse, status_code=201)
-def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_user:User=Depends(require_user)):
+def apply_for_job(data: ApplicationCreate, db: Session=Depends(get_db), current_user=Depends(require_user)):
     job=db.query(Job).filter(Job.id==data.job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="The job doesn't exist.")
