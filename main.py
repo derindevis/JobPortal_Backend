@@ -39,7 +39,21 @@ def create_default_admin():
     finally:
         db.close()
 
+def auto_seed_jobs():
+    from models.job import Job
+    from seed_jobs import seed_jobs
+    db = SessionLocal()
+    try:
+        if db.query(Job).count() == 0:
+            print("Jobs database is empty. Auto-seeding default jobs...")
+            seed_jobs()
+    except Exception as e:
+        print(f"Failed to auto-seed jobs: {e}")
+    finally:
+        db.close()
+
 create_default_admin()
+auto_seed_jobs()
 
 app = FastAPI(title="JobPortal")
 
