@@ -3,13 +3,44 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from database import engine, Base
+from database import engine, Base, SessionLocal
 from routers import jobs, auth, applications
 
 load_dotenv()
 
 #eathanu sherikkum olla SQL Tables ninghalude model vechu indakkunnathu
 Base.metadata.create_all(bind=engine)
+
+def create_default_admin():
+    from models.user import User
+    from utils.hashing import hash_password
+    db = SessionLocal()
+    try:
+        admin_username = os.getenv("ADMIN_USERNAME", "admin")
+        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        existing_admin = db.query(User).filter(User.role == "admin").first()
+        if not existing_admin:
+            existing_user = db.query(User).filter(User.username == admin_username).first()
+            if existing_user:
+                existing_user.role = "admin"
+                existing_user.hashed_password = hash_password(admin_password)
+                print(f"Updated existing user '{admin_username}' to admin role.")
+            else:
+                new_admin = User(
+                    username=admin_username,
+                    hashed_password=hash_password(admin_password),
+                    role="admin"
+                )
+                db.add(new_admin)
+                print(f"Created default admin user '{admin_username}' with role admin.")
+            db.commit()
+    except Exception as e:
+        print(f"Failed to create default admin: {e}")
+    finally:
+        db.close()
+
+create_default_admin()
+
 app = FastAPI(title="JobPortal")
 
 # Mount uploads static folder
