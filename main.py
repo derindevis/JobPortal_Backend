@@ -15,11 +15,27 @@ app = FastAPI(title="JobPortal")
 # Mount uploads static folder
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-FRONTEND_URL=os.getenv("FRONTEND_URL", "http://localhost:5173")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
+origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://job-portal-frontend-gamma-brown.vercel.app"
+]
+
+if FRONTEND_URL:
+    for val in FRONTEND_URL.split(","):
+        val = val.strip()
+        if val:
+            if val.endswith("/"):
+                val = val[:-1]
+            if val not in origins:
+                origins.append(val)
+
+print("Allowed CORS Origins:", origins)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:5174", "http://localhost:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
