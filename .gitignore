@@ -1,0 +1,11 @@
+__pycache__
+*.pyc
+jobportal.db
+
+#security
+.env
+
+#Database
+*.db
+*.sqlite3
+*.sqlite
